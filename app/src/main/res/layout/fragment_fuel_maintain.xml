@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.FuelMaintainFragment">
+
+    <TextView
+        android:id="@+id/lblFuelPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Price"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtFuelPrice"
+        app:layout_constraintEnd_toStartOf="@+id/txtFuelPrice" />
+
+    <TextView
+        android:id="@+id/lblFuelCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Cost"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtFuelCost"
+        app:layout_constraintEnd_toStartOf="@+id/txtFuelCost" />
+
+    <EditText
+        android:id="@+id/txtFuelVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="10"
+        app:layout_constraintEnd_toEndOf="@+id/txtFuelOdometer"
+        app:layout_constraintTop_toBottomOf="@+id/txtFuelOdometer" />
+
+    <TextView
+        android:id="@+id/lblFuelVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Volume"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtFuelVolume"
+        app:layout_constraintEnd_toStartOf="@+id/txtFuelVolume" />
+
+    <EditText
+        android:id="@+id/txtFuelDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:ems="10"
+        android:inputType="date|time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtFuelOdometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="100"
+        app:layout_constraintEnd_toEndOf="@+id/txtFuelDateTime"
+        app:layout_constraintTop_toBottomOf="@+id/txtFuelDateTime" />
+
+    <TextView
+        android:id="@+id/lblFuelOdometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Odometer"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtFuelOdometer"
+        app:layout_constraintEnd_toStartOf="@+id/txtFuelOdometer" />
+
+    <TextView
+        android:id="@+id/lblFuelDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Date/Time"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtFuelDateTime"
+        app:layout_constraintEnd_toStartOf="@+id/txtFuelDateTime" />
+
+    <EditText
+        android:id="@+id/txtFuelPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="10"
+        app:layout_constraintEnd_toEndOf="@+id/txtFuelVolume"
+        app:layout_constraintTop_toBottomOf="@+id/txtFuelVolume" />
+
+    <EditText
+        android:id="@+id/txtFuelCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="10"
+        app:layout_constraintEnd_toEndOf="@+id/txtFuelPrice"
+        app:layout_constraintTop_toBottomOf="@+id/txtFuelPrice" />
+
+    <Switch
+        android:id="@+id/swFuelIsFull"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:switchPadding="5sp"
+        android:text="Full Tank"
+        android:textColor="@color/textSecondary"
+        app:layout_constraintStart_toStartOf="@+id/lblFuelCost"
+        app:layout_constraintTop_toBottomOf="@+id/txtFuelCost" />
+
+    <Switch
+        android:id="@+id/swFuelIsMissed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:switchPadding="5sp"
+        android:text="Missed Fillup"
+        android:textColor="@color/textSecondary"
+        app:layout_constraintEnd_toEndOf="@+id/swFuelIsFull"
+        app:layout_constraintTop_toBottomOf="@+id/swFuelIsFull" />
+
+    <Switch
+        android:id="@+id/swFuelIsOdoEst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:switchPadding="5sp"
+        android:text="Odometer Estimate"
+        android:textColor="@color/textSecondary"
+        app:layout_constraintEnd_toEndOf="@+id/swFuelIsMissed"
+        app:layout_constraintTop_toBottomOf="@+id/swFuelIsMissed" />
+
+    <Button
+        android:id="@+id/btnFuelSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swFuelIsOdoEst" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

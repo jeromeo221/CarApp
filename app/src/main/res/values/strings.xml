@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Car App</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="title_fragment_fuel">Fuel Transactions</string>
+    <string name="title_fragment_fuel_add">Add Fuel</string>
+    <string name="title_fragment_fuel_edit">Edit Fuel</string>
+    <string name="title_fragment_vehicle_add">Add Vehicle</string>
+    <string name="title_fragment_vehicle_edit">Edit Vehicle</string>
+    <string name="vehicle_no_available">No Available Vehicle</string>
+    <string name="vehicle_title">%1$s %2$s %3$d</string>
+    <string name="fuel_price">$%1$s / L</string>
+    <string name="fuel_volume">%1$sL</string>
+    <string name="fuel_cost">$%1$s</string>
+</resources>
