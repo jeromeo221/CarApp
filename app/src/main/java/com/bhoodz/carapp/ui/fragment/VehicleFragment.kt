@@ -9,10 +9,12 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bhoodz.carapp.R
 import com.bhoodz.carapp.helpers.AuthHelper
 import com.bhoodz.carapp.ui.VehicleItemClickListener
 import com.bhoodz.carapp.models.Vehicle
+import com.bhoodz.carapp.models.request.ResendRequestType
 import com.bhoodz.carapp.ui.adapter.VehicleAdapter
 import com.bhoodz.carapp.viewmodels.AuthViewModel
 import com.bhoodz.carapp.viewmodels.SelectedItemViewModel
@@ -35,9 +37,9 @@ class VehicleFragment : Fragment(),
     }
 
     private val vehicleAdapter = VehicleAdapter(ArrayList(), this, this)
-    private val vehicleViewModel by lazy { ViewModelProviders.of(activity!!).get(VehicleViewModel::class.java) }
-    private val authViewModel by lazy { ViewModelProviders.of(activity!!).get(AuthViewModel::class.java) }
-    private val selectedItemViewModel by lazy { ViewModelProviders.of(activity!!).get(
+    private val vehicleViewModel by lazy { ViewModelProviders.of(requireActivity()).get(VehicleViewModel::class.java) }
+    private val authViewModel by lazy { ViewModelProviders.of(requireActivity()).get(AuthViewModel::class.java) }
+    private val selectedItemViewModel by lazy { ViewModelProviders.of(requireActivity()).get(
         SelectedItemViewModel::class.java) }
 
     private var token: String? = null
@@ -55,13 +57,22 @@ class VehicleFragment : Fragment(),
 
         val  vehicleItemClickListener =
             VehicleItemClickListener(
-                context!!,
+                requireContext(),
                 lvVehicle,
                 this
             )
         lvVehicle.layoutManager = LinearLayoutManager(context)
         lvVehicle.addOnItemTouchListener(vehicleItemClickListener)
         lvVehicle.adapter = vehicleAdapter
+
+        val swipeRefreshLayout = requireActivity().findViewById<SwipeRefreshLayout>(R.id.swipeRefreshVehicle)
+        swipeRefreshVehicle.setOnRefreshListener {
+            if (AuthHelper.isTokenExpired(token)) {
+                authViewModel.relogin(ResendRequestType.GET_VEHICLES, null)
+            } else {
+                vehicleViewModel.getVehicles(token)
+            }
+        }
 
         vehicleViewModel.vehicleEntries.observe(viewLifecycleOwner, Observer { vehicleEntries ->
             if (vehicleEntries != null) {
@@ -73,6 +84,10 @@ class VehicleFragment : Fragment(),
             if (error.isNotEmpty()) {
                 Toast.makeText(activity, error, Toast.LENGTH_LONG).show()
             }
+        })
+
+        vehicleViewModel.isLoadingGetEntry.observe(viewLifecycleOwner, Observer { isLoading ->
+            swipeRefreshLayout.isRefreshing = isLoading
         })
 
         authViewModel.tokenEntry.observe(viewLifecycleOwner, Observer { token ->

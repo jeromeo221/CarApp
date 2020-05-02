@@ -63,9 +63,9 @@ class VehicleAdapter(private var vehicleList: List<Vehicle>,
         }
 
         if (rowSelected == position) {
-            holder.itemView.setBackgroundColor(fragment.context?.getColor(R.color.colorAccent)!!)
+            holder.itemView.setBackgroundColor(fragment.requireContext().getColor(R.color.colorAccent))
         } else {
-            holder.itemView.setBackgroundColor(fragment.context?.getColor(R.color.cardBackground)!!)
+            holder.itemView.setBackgroundColor(fragment.requireContext().getColor(R.color.cardBackground))
         }
 
         holder.itemView.setOnLongClickListener {

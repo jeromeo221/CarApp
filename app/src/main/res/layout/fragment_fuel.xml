@@ -7,15 +7,27 @@
     android:background="#FAFAFA"
     tools:context=".ui.fragment.FuelFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lvFuel"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshFuel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblFuelVehicle" />
+        app:layout_constraintTop_toBottomOf="@+id/lblFuelVehicle">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lvFuel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblFuelVehicle" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <TextView
         android:id="@+id/lblFuelVehicle"

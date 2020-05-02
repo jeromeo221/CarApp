@@ -1,7 +1,6 @@
 package com.bhoodz.carapp.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bhoodz.carapp.R
 import com.bhoodz.carapp.helpers.AuthHelper
 import com.bhoodz.carapp.models.Fuel
@@ -37,9 +37,9 @@ class FuelFragment : Fragment(),
 
     private var vehicle: Vehicle? = null
     private var token: String? = null
-    private val fuelViewModel by lazy { ViewModelProviders.of(activity!!).get(FuelViewModel::class.java) }
-    private val authViewModel by lazy { ViewModelProviders.of(activity!!).get(AuthViewModel::class.java) }
-    private val selectedItemViewModel by lazy { ViewModelProviders.of(activity!!).get(
+    private val fuelViewModel by lazy { ViewModelProviders.of(requireActivity()).get(FuelViewModel::class.java) }
+    private val authViewModel by lazy { ViewModelProviders.of(requireActivity()).get(AuthViewModel::class.java) }
+    private val selectedItemViewModel by lazy { ViewModelProviders.of(requireActivity()).get(
         SelectedItemViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +48,8 @@ class FuelFragment : Fragment(),
             vehicle = it.getParcelable(ARG_VEHICLE)
             token = it.getString(ARG_TOKEN)
         }
+
+        getFuels()
     }
 
     override fun onCreateView(
@@ -61,7 +63,6 @@ class FuelFragment : Fragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         with (activity as AppCompatActivity) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.title = getString(R.string.title_fragment_fuel)
@@ -77,12 +78,11 @@ class FuelFragment : Fragment(),
         val vehicle = vehicle
         if (vehicle != null) {
             lblFuelVehicle.text = getString(R.string.vehicle_title, vehicle.make, vehicle.model, vehicle.year)
-            fuelViewModel.setVehicleId(vehicle._id)
-            if (AuthHelper.isTokenExpired(token)) {
-                authViewModel.relogin(ResendRequestType.GET_FUELS, vehicle)
-            } else {
-                fuelViewModel.getFuels(vehicle._id, token)
-            }
+        }
+
+        val swipeRefreshFuel = requireActivity().findViewById<SwipeRefreshLayout>(R.id.swipeRefreshFuel)
+        swipeRefreshFuel.setOnRefreshListener {
+            getFuels()
         }
 
         fuelViewModel.fuelEntries.observe(viewLifecycleOwner, Observer { fuelEntries ->
@@ -93,6 +93,10 @@ class FuelFragment : Fragment(),
             if (error.isNotEmpty()) {
                 Toast.makeText(activity, error, Toast.LENGTH_LONG).show()
             }
+        })
+
+        fuelViewModel.isLoadingGetEntry.observe(viewLifecycleOwner, Observer {isLoading ->
+            swipeRefreshFuel.isRefreshing = isLoading
         })
 
         selectedItemViewModel.selectedFuelEntry.observe(viewLifecycleOwner, Observer { selectedItem ->
@@ -116,9 +120,16 @@ class FuelFragment : Fragment(),
         selectedItemViewModel.clearSelectedFuel()
     }
 
-    override fun onPause() {
-        super.onPause()
-        fuelViewModel.setVehicleId(null)
+    private fun getFuels() {
+        val vehicle = vehicle
+        if (vehicle != null) {
+            fuelViewModel.setVehicleId(vehicle._id)
+            if (AuthHelper.isTokenExpired(token)) {
+                authViewModel.relogin(ResendRequestType.GET_FUELS, vehicle)
+            } else {
+                fuelViewModel.getFuels(vehicle._id, token)
+            }
+        }
     }
 
     companion object {

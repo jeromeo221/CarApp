@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bhoodz.carapp.R
 import com.bhoodz.carapp.models.Fuel
-import org.w3c.dom.Text
 import java.math.BigDecimal
 import java.util.*
 
@@ -83,13 +82,13 @@ class FuelAdapter(private var fuelList: List<Fuel>,
             val priceKm = displayComputation(fuel.pricekm?.setScale(2, BigDecimal.ROUND_HALF_DOWN))
             holder.tvFuelDate.text = Fuel.prepareDateToDisplay(fuel.date!!)
             holder.tvFuelOdometer.text = fuel.odometer.toString()
-            with (fragment.context!!) {
+            with (fragment.requireContext()) {
                 holder.tvFuelPrice.text = getString(R.string.fuel_price, String.format(Locale.getDefault(), fuel.price.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
                 holder.tvFuelVolume.text = getString(R.string.fuel_volume, String.format(Locale.getDefault(), fuel.volume.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
                 holder.tvFuelCost.text = getString(R.string.fuel_cost, String.format(Locale.getDefault(), fuel.cost.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
+                holder.tvFuelMileage.text = if (mileage.isNotEmpty()) getString(R.string.fuel_mileage, String.format(Locale.getDefault(), mileage)) else ""
+                holder.tvFuelPriceKm.text = if (priceKm.isNotEmpty()) getString(R.string.fuel_priceKm, String.format(Locale.getDefault(), priceKm)) else ""
             }
-            holder.tvFuelMileage.text = String.format(Locale.getDefault(), mileage)
-            holder.tvFuelPriceKm.text = String.format(Locale.getDefault(), priceKm)
             holder.lblFuelMileage.visibility = deriveVisibility(mileage)
             holder.lblFuelPriceKm.visibility = deriveVisibility(priceKm)
             holder.tvFuelFull.visibility = deriveVisibility(fuel.isFull)
@@ -97,9 +96,9 @@ class FuelAdapter(private var fuelList: List<Fuel>,
             holder.tvFuelEstOdo.visibility = deriveVisibility(fuel.isEstOdo)
 
             if (rowSelected == position && vehicleIdSelected == fuel.vehicle) {
-                holder.itemView.setBackgroundColor(fragment.context?.getColor(R.color.colorAccent)!!)
+                holder.itemView.setBackgroundColor(fragment.requireContext().getColor(R.color.colorAccent))
             } else {
-                holder.itemView.setBackgroundColor(fragment.context?.getColor(R.color.listBackground)!!)
+                holder.itemView.setBackgroundColor(fragment.requireContext().getColor(R.color.listBackground))
             }
         }
 

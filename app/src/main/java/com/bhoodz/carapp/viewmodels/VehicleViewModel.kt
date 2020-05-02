@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bhoodz.carapp.api.RetrofitClient
-import com.bhoodz.carapp.helpers.AuthHelper
 import com.bhoodz.carapp.models.Vehicle
 import com.bhoodz.carapp.models.request.MaintainRequest
 import com.bhoodz.carapp.models.response.GetListResponse
@@ -15,10 +14,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 private const val TAG = "VehicleViewModel"
-
-enum class VehicleRequestType {
-    GET_VEHICLES
-}
 
 class VehicleViewModel : ViewModel() {
 
@@ -30,24 +25,35 @@ class VehicleViewModel : ViewModel() {
     val vehicleEntries: LiveData<List<Vehicle>>
         get() = vehicles
 
-    private val isLoading = MutableLiveData<Boolean>()
-    val isLoadingEntry: LiveData<Boolean>
-        get() = isLoading
+    private val isLoadingGet = MutableLiveData<Boolean>()
+    val isLoadingGetEntry: LiveData<Boolean>
+        get() = isLoadingGet
+
+    private val isLoadingMaintain = MutableLiveData<Boolean>()
+    val isLoadingMaintainEntry: LiveData<Boolean>
+        get() = isLoadingMaintain
+
+    private val isSuccessMaintain = MutableLiveData<Boolean>()
+    val isSuccessMaintainEntry: LiveData<Boolean>
+        get() = isSuccessMaintain
 
     init {
         vehicles.postValue(null)
         errorMessage.postValue("")
-        isLoading.postValue(false)
+        isLoadingGet.postValue(false)
+        isLoadingMaintain.postValue(false)
+        isSuccessMaintain.postValue(false)
     }
 
     fun getVehicles(token: String?) {
         if (token == null) return
-        isLoading.value = true
+        isLoadingGet.value = true
         errorMessage.value = ""
 
         RetrofitClient.instance.getVehicles("Bearer $token").enqueue(object: Callback<GetListResponse<Vehicle>> {
             override fun onFailure(call: Call<GetListResponse<Vehicle>>, t: Throwable) {
                 handleFailureResponse(t)
+                isLoadingGet.value = true
             }
 
             override fun onResponse(call: Call<GetListResponse<Vehicle>>, response: Response<GetListResponse<Vehicle>>) {
@@ -67,21 +73,28 @@ class VehicleViewModel : ViewModel() {
                     errorMessage.value = "Unable to retrieve the vehicle body response"
                 }
 
-                isLoading.value = false
+                isLoadingGet.value = false
             }
         })
     }
 
     fun addVehicle(data: Vehicle, token: String?) {
         if(!handleInitializeRequest(token)) return
+        isLoadingMaintain.value = true
+        isSuccessMaintain.value = false
+
         val requestBody = MaintainRequest(data)
         RetrofitClient.instance.addVehicle("Bearer $token", requestBody).enqueue(object: Callback<MaintainResponse<Vehicle>> {
             override fun onFailure(call: Call<MaintainResponse<Vehicle>>, t: Throwable) {
                 handleFailureResponse(t)
+                isLoadingMaintain.value = false
             }
 
             override fun onResponse(call: Call<MaintainResponse<Vehicle>>, response: Response<MaintainResponse<Vehicle>>) {
-                handleOkMaintainResponse(response, token)
+                handleOkMaintainResponse(response, token) {
+                    isSuccessMaintain.value = true
+                }
+                isLoadingMaintain.value = false
             }
         })
     }
@@ -92,14 +105,21 @@ class VehicleViewModel : ViewModel() {
             return
         }
         if(!handleInitializeRequest(token)) return
+        isLoadingMaintain.value = true
+        isSuccessMaintain.value = false
+
         val requestBody = MaintainRequest(data)
         RetrofitClient.instance.updateVehicle("Bearer $token", data._id!!, requestBody).enqueue(object: Callback<MaintainResponse<Vehicle>> {
             override fun onFailure(call: Call<MaintainResponse<Vehicle>>, t: Throwable) {
                 handleFailureResponse(t)
+                isLoadingMaintain.value = false
             }
 
             override fun onResponse(call: Call<MaintainResponse<Vehicle>>, response: Response<MaintainResponse<Vehicle>>) {
-                handleOkMaintainResponse(response, token)
+                handleOkMaintainResponse(response, token) {
+                    isSuccessMaintain.value = true
+                }
+                isLoadingMaintain.value = false
             }
         })
     }
@@ -113,7 +133,7 @@ class VehicleViewModel : ViewModel() {
             }
 
             override fun onResponse(call: Call<MaintainResponse<Vehicle>>, response: Response<MaintainResponse<Vehicle>>) {
-                handleOkMaintainResponse(response, token)
+                handleOkMaintainResponse(response, token) {}
             }
         })
     }
@@ -123,17 +143,17 @@ class VehicleViewModel : ViewModel() {
             errorMessage.value = "Unauthorized to maintain Vehicle"
             return false
         }
-        isLoading.value = true
         errorMessage.value = ""
         return true
     }
 
-    private fun handleOkMaintainResponse(response: Response<MaintainResponse<Vehicle>>, token: String?) {
+    private fun handleOkMaintainResponse(response: Response<MaintainResponse<Vehicle>>, token: String?, onSuccess: () -> Unit) {
         val payload = response.body()
 
         if (response.isSuccessful && payload != null) {
             if (payload.success){
                 getVehicles(token)
+                onSuccess()
                 errorMessage.value = ""
 
             } else {
@@ -145,7 +165,6 @@ class VehicleViewModel : ViewModel() {
             Log.d(TAG, "onResponse body is null: ${response.errorBody()?.toString()}")
             errorMessage.value = "Unable to retrieve the vehicle body response"
         }
-        isLoading.value = false
     }
 
     private fun handleFailureResponse(t: Throwable) {
@@ -156,6 +175,5 @@ class VehicleViewModel : ViewModel() {
 
         Log.d(TAG, "onFailure error: $message")
         errorMessage.value = message
-        isLoading.value = false
     }
 }

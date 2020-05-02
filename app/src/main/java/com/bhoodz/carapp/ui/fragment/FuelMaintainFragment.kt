@@ -11,12 +11,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
 import com.bhoodz.carapp.R
+import com.bhoodz.carapp.helpers.MathHelper
 import com.bhoodz.carapp.models.FUEL_DATE_DISPLAY
 import com.bhoodz.carapp.models.Fuel
+import com.bhoodz.carapp.viewmodels.FuelViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_fuel_maintain.*
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +40,7 @@ class FuelMaintainFragment : MaintainFragment() {
     private var vehicleId: String? = null
     private var token: String? = null
     private var listener: OnFuelMaintainSave? = null
+    private val fuelViewModel by lazy { ViewModelProviders.of(requireActivity()).get(FuelViewModel::class.java) }
 
     interface OnFuelMaintainSave {
         fun onFuelMaintainSave(fuel: Fuel, isAdd: Boolean)
@@ -68,6 +74,14 @@ class FuelMaintainFragment : MaintainFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fuelViewModel.cleaErrorMessageMaintain()
+        fuelViewModel.errorMessageMaintainEntry.observe(viewLifecycleOwner, Observer { error ->
+            if (error.isNotEmpty()) {
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+            }
+        })
+
         val fuel = fuel
         if (fuel == null) {
             //Add a new fuel
@@ -99,7 +113,7 @@ class FuelMaintainFragment : MaintainFragment() {
             }
             invalidateOptionsMenu()
             fab.hide()
-            vehicleFragment.view?.visibility = View.INVISIBLE
+            vehicleFragment.visibility = View.INVISIBLE
         }
 
         txtFuelDateTime.setOnFocusChangeListener { _, hasFocus ->
@@ -120,11 +134,19 @@ class FuelMaintainFragment : MaintainFragment() {
                     txtFuelDateTime.setText(dateFormat.format(calendar.time))
                 }
 
-                val timePicker = TimePickerDialog(context!!, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false)
+                val timePicker = TimePickerDialog(requireContext(),
+                    timeSetListener,
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    false)
                 timePicker.show()
             }
 
-            val datePicker = DatePickerDialog(context!!, dateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+            val datePicker = DatePickerDialog(requireContext(),
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }
 
@@ -158,6 +180,18 @@ class FuelMaintainFragment : MaintainFragment() {
         }
         if (txtFuelCost.text.isEmpty()) {
             txtFuelCost.error = "Fuel Cost is required"
+            return false
+        }
+
+        val volume = txtFuelVolume.text.toString().toBigDecimal()
+        val price = txtFuelPrice.text.toString().toBigDecimal()
+        val cost = txtFuelCost.text.toString().toBigDecimal()
+
+        val computedCost = volume.multiply(price)
+        val costToleranceUpper = computedCost.add(BigDecimal.valueOf(0.01))
+        val costToleranceLower = computedCost.subtract(BigDecimal.valueOf(0.01))
+        if (!MathHelper.inBetween(cost, costToleranceLower, costToleranceUpper)) {
+            txtFuelCost.error = "Volume and Price computation do not match with Cost"
             return false
         }
 
