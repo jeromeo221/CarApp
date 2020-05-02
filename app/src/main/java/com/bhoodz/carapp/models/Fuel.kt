@@ -2,11 +2,7 @@ package com.bhoodz.carapp.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.synthetic.main.fragment_fuel_maintain.*
 import java.math.BigDecimal
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

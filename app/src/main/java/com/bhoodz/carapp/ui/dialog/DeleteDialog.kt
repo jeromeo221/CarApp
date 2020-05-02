@@ -40,7 +40,7 @@ class DeleteDialog : AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(requireContext())
         val arguments = arguments
         val messageString: String?
         val data: Parcelable?

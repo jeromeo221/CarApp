@@ -53,10 +53,11 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val loadingDialog = LoadingDialog(this)
+        val authLoadingDialog = LoadingDialog(this)
+        val objectLoadingDialog = LoadingDialog(this)
 
         authViewModel.isLoadingEntry.observe(this, Observer { isLoading ->
-            processLoadingDialog(loadingDialog, isLoading)
+            processLoadingDialog(authLoadingDialog, isLoading)
         })
 
         authViewModel.mobileTokenEntry.observe(this, Observer { token ->
@@ -79,6 +80,9 @@ class MainActivity : AppCompatActivity(),
             if (resendRequest != null) {
                 Log.d(TAG, "CALLING RESEND REQUEST: $resendRequest")
                 when (resendRequest.type) {
+                    ResendRequestType.GET_VEHICLES -> {
+                        vehicleViewModel.getVehicles(token)
+                    }
                     ResendRequestType.ADD_VEHICLE -> {
                         vehicleViewModel.addVehicle(resendRequest.entity as Vehicle, token)
                     }
@@ -112,17 +116,36 @@ class MainActivity : AppCompatActivity(),
             }
         })
 
-        vehicleViewModel.isLoadingEntry.observe(this, Observer { isLoading ->
-            processLoadingDialog(loadingDialog, isLoading)
+        vehicleViewModel.isLoadingMaintainEntry.observe(this, Observer { isLoading ->
+            processLoadingDialog(objectLoadingDialog, isLoading)
         })
 
-        fuelViewModel.isLoadingEntry.observe(this, Observer { isLoading ->
-            processLoadingDialog(loadingDialog, isLoading)
+        vehicleViewModel.isSuccessMaintainEntry.observe(this, Observer { isSuccess ->
+            if (isSuccess) {
+                supportFragmentManager.popBackStack()
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.title = getString(R.string.app_name)
+                fab.show()
+                vehicleFragment.visibility = View.VISIBLE
+                invalidateOptionsMenu()
+            }
+        })
+
+        fuelViewModel.isLoadingMaintainEntry.observe(this, Observer { isLoading ->
+            processLoadingDialog(objectLoadingDialog, isLoading)
         })
 
         fuelViewModel.vehicleIdEntry.observe(this, Observer { vehicleId ->
             Log.d(TAG, "current vehicle id: $vehicleId")
             currentVehicleId = vehicleId
+        })
+
+        fuelViewModel.isSuccessMaintainEntry.observe(this, Observer { isSuccess ->
+            if (isSuccess) {
+                supportFragmentManager.popBackStack()
+                fab.show()
+                invalidateOptionsMenu()
+            }
         })
 
         selectedItemViewModel.selectedVehicleEntry.observe(this, Observer { selectedItem ->
@@ -153,13 +176,13 @@ class MainActivity : AppCompatActivity(),
 
     override fun onBackPressed() {
         super.onBackPressed()
-
         invalidateOptionsMenu()
         when (supportFragmentManager.findFragmentById(R.id.main_container)) {
             null -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 supportActionBar?.title = getString(R.string.app_name)
-                vehicleFragment.view?.visibility = View.VISIBLE
+                vehicleFragment.visibility = View.VISIBLE
+                fuelViewModel.setVehicleId(null)
                 fab.show()
             }
             is FuelFragment -> {
@@ -167,6 +190,7 @@ class MainActivity : AppCompatActivity(),
                 fab.show()
             }
         }
+        hideKeyboard()
     }
 
     private fun processLoadingDialog(dialog: LoadingDialog, isLoading: Boolean) {
@@ -178,6 +202,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onNavigateToFuel(vehicle: Vehicle, token: String?) {
+        fuelViewModel.clearFuels()
         val fuelFragment = FuelFragment.newInstance(vehicle, token)
         supportFragmentManager.beginTransaction().add(R.id.main_container, fuelFragment, FRAGMENT_FUEL).addToBackStack(null).commit()
     }
@@ -200,13 +225,7 @@ class MainActivity : AppCompatActivity(),
                 vehicleViewModel.updateVehicle(vehicle, token)
             }
         }
-
         hideKeyboard()
-        supportFragmentManager.popBackStack()
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        fab.show()
-        vehicleFragment.view?.visibility = View.VISIBLE
-        invalidateOptionsMenu()
     }
 
     override fun onFuelMaintainSave(fuel: Fuel, isAdd: Boolean) {
@@ -229,9 +248,6 @@ class MainActivity : AppCompatActivity(),
         }
 
         hideKeyboard()
-        supportFragmentManager.popBackStack()
-        fab.show()
-        invalidateOptionsMenu()
     }
 
     override fun onDeleteConfirm(data: Parcelable) {
@@ -263,13 +279,13 @@ class MainActivity : AppCompatActivity(),
         val newLoginFragment = LoginFragment.newInstance()
         supportFragmentManager.beginTransaction().replace(R.id.login_container, newLoginFragment).commit()
         login_container.visibility = View.VISIBLE
-        vehicleFragment.view?.visibility = View.GONE
+        vehicleFragment.visibility = View.GONE
         fab.hide()
     }
 
     private fun hideLoginScreen() {
         login_container.visibility = View.GONE
-        vehicleFragment.view?.visibility = View.VISIBLE
+        vehicleFragment.visibility = View.VISIBLE
         fab.show()
     }
 
@@ -314,6 +330,7 @@ class MainActivity : AppCompatActivity(),
             R.id.menuLogout -> {
                 authViewModel.logout()
                 selectedItemViewModel.clearSelectedVehicle()
+                selectedItemViewModel.clearSelectedFuel()
                 false
             }
             android.R.id.home -> {

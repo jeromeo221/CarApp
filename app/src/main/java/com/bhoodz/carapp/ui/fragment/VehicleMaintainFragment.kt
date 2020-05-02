@@ -85,7 +85,7 @@ class VehicleMaintainFragment : MaintainFragment() {
             }
             invalidateOptionsMenu()
             fab.hide()
-            vehicleFragment.view?.visibility = View.INVISIBLE
+            vehicleFragment.visibility = View.INVISIBLE
         }
 
         btnVehicleSave.setOnClickListener {

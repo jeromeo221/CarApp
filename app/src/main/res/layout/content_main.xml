@@ -17,7 +17,7 @@
 
     </FrameLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/vehicleFragment"
         android:name="com.bhoodz.carapp.ui.fragment.VehicleFragment"
         android:layout_width="match_parent"

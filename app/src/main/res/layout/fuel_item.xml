@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginTop="4dp"
-        android:text="Date:"
+        android:text="@string/date_colon_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Odometer:"
+        android:text="@string/odometer_colon_text"
         app:layout_constraintEnd_toEndOf="@+id/lblFuelDate"
         app:layout_constraintTop_toBottomOf="@+id/lblFuelDate" />
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Price:"
+        android:text="@string/price_colon_text"
         app:layout_constraintEnd_toEndOf="@+id/lblFuelOdometer"
         app:layout_constraintTop_toBottomOf="@+id/lblFuelOdometer" />
 
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Volume:"
+        android:text="@string/volume_colon_text"
         app:layout_constraintEnd_toEndOf="@+id/lblFuelPrice"
         app:layout_constraintTop_toBottomOf="@+id/lblFuelPrice" />
 
@@ -46,7 +46,7 @@
         android:id="@+id/lblFuelMileage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mileage:"
+        android:text="@string/mileage_colon_text"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelDate"
         app:layout_constraintEnd_toEndOf="@+id/lblFuelPriceKm" />
 
@@ -54,8 +54,8 @@
         android:id="@+id/lblFuelPriceKm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Price/Km:"
+        android:layout_marginStart="8dp"
+        android:text="@string/price_per_km_colon_text"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelOdometer"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -112,7 +112,7 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelMileage"
         app:layout_constraintStart_toEndOf="@+id/lblFuelMileage"
-        tools:text="34.15" />
+        tools:text="34.15 Km/L" />
 
     <TextView
         android:id="@+id/tvFuelPriceKm"
@@ -121,7 +121,7 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelPriceKm"
         app:layout_constraintStart_toEndOf="@+id/lblFuelPriceKm"
-        tools:text="10.00" />
+        tools:text="$10.00 / Km" />
 
     <View
         android:id="@+id/divider2"
@@ -140,9 +140,9 @@
         android:id="@+id/tvFuelFull"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Full Tank"
+        android:text="@string/full_tank_text"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/lblFuelPriceKm" />
@@ -152,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Missed Fillup"
+        android:text="@string/missed_fillup_text"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/tvFuelFull"
         app:layout_constraintTop_toBottomOf="@+id/tvFuelFull" />
@@ -162,7 +162,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Estimated Odometer"
+        android:text="@string/estimated_odometer_text"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/tvFuelMissed"
         app:layout_constraintTop_toBottomOf="@+id/tvFuelMissed" />
@@ -172,7 +172,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Cost:"
+        android:text="@string/cost_colon_text"
         app:layout_constraintEnd_toEndOf="@+id/lblFuelVolume"
         app:layout_constraintTop_toBottomOf="@+id/lblFuelVolume" />
 
@@ -183,5 +183,5 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelCost"
         app:layout_constraintStart_toEndOf="@+id/lblFuelCost"
-        tools:text="30.00" />
+        tools:text="$30.00 / L" />
 </androidx.constraintlayout.widget.ConstraintLayout>
