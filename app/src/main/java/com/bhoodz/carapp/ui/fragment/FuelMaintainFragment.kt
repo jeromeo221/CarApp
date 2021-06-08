@@ -188,8 +188,8 @@ class FuelMaintainFragment : MaintainFragment() {
         val cost = txtFuelCost.text.toString().toBigDecimal()
 
         val computedCost = volume.multiply(price)
-        val costToleranceUpper = computedCost.add(BigDecimal.valueOf(0.01))
-        val costToleranceLower = computedCost.subtract(BigDecimal.valueOf(0.01))
+        val costToleranceUpper = computedCost.add(BigDecimal.valueOf(0.03))
+        val costToleranceLower = computedCost.subtract(BigDecimal.valueOf(0.03))
         if (!MathHelper.inBetween(cost, costToleranceLower, costToleranceUpper)) {
             txtFuelCost.error = "Volume and Price computation do not match with Cost"
             return false

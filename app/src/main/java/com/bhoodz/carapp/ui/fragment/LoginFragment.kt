@@ -17,15 +17,15 @@ import kotlinx.android.synthetic.main.fragment_login.*
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
-    private val authViewModel by lazy { ViewModelProviders.of(activity!!).get(AuthViewModel::class.java) }
+    private val authViewModel by lazy { ViewModelProviders.of(requireActivity()).get(AuthViewModel::class.java) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        arguments?.let {
-//            param1 = it.getString(ARG_PARAM1)
-//            param2 = it.getString(ARG_PARAM2)
-//        }
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+////        arguments?.let {
+////            param1 = it.getString(ARG_PARAM1)
+////            param2 = it.getString(ARG_PARAM2)
+////        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
