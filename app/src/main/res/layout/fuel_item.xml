@@ -84,7 +84,7 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelPrice"
         app:layout_constraintStart_toEndOf="@+id/lblFuelPrice"
-        tools:text="$23.54" />
+        tools:text="$23.541" />
 
     <TextView
         android:id="@+id/tvFuelVolume"
@@ -93,7 +93,7 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblFuelVolume"
         app:layout_constraintStart_toEndOf="@+id/lblFuelVolume"
-        tools:text="50.00" />
+        tools:text="50.000" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

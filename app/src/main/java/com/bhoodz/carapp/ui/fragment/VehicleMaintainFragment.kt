@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.auth0.android.jwt.JWT
 import com.bhoodz.carapp.R
 import com.bhoodz.carapp.helpers.AuthHelper
-import com.bhoodz.carapp.models.TokenPayload
 import com.bhoodz.carapp.models.Vehicle
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*

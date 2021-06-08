@@ -83,8 +83,8 @@ class FuelAdapter(private var fuelList: List<Fuel>,
             holder.tvFuelDate.text = Fuel.prepareDateToDisplay(fuel.date!!)
             holder.tvFuelOdometer.text = fuel.odometer.toString()
             with (fragment.requireContext()) {
-                holder.tvFuelPrice.text = getString(R.string.fuel_price, String.format(Locale.getDefault(), fuel.price.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
-                holder.tvFuelVolume.text = getString(R.string.fuel_volume, String.format(Locale.getDefault(), fuel.volume.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
+                holder.tvFuelPrice.text = getString(R.string.fuel_price, String.format(Locale.getDefault(), fuel.price.setScale(3, BigDecimal.ROUND_HALF_DOWN).toString()))
+                holder.tvFuelVolume.text = getString(R.string.fuel_volume, String.format(Locale.getDefault(), fuel.volume.setScale(3, BigDecimal.ROUND_HALF_DOWN).toString()))
                 holder.tvFuelCost.text = getString(R.string.fuel_cost, String.format(Locale.getDefault(), fuel.cost.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()))
                 holder.tvFuelMileage.text = if (mileage.isNotEmpty()) getString(R.string.fuel_mileage, String.format(Locale.getDefault(), mileage)) else ""
                 holder.tvFuelPriceKm.text = if (priceKm.isNotEmpty()) getString(R.string.fuel_priceKm, String.format(Locale.getDefault(), priceKm)) else ""

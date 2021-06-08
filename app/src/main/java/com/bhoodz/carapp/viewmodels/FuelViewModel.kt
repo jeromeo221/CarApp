@@ -12,7 +12,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import android.os.Handler
 
 private const val TAG = "FuelViewModel"
 val EMPTY_FUEL_LIST: List<Fuel> = Collections.emptyList()
@@ -72,11 +71,12 @@ class FuelViewModel : ViewModel() {
         if (token == null || currentVehicleId == null) return
         Log.d(TAG, "Getting Fuels...")
 
-        val r = Runnable {
-            isLoadingGet.value = true
-        }
-        val handler = Handler()
-        handler.postDelayed(r, 500)
+//        val r = Runnable {
+//            isLoadingGet.value = true
+//        }
+//        val handler = Handler()
+//        handler.postDelayed(r, 500)
+        isLoadingGet.value = true
         errorMessage.value = ""
 
         RetrofitClient.instance.getFuels("Bearer $token", currentVehicleId).enqueue(object: Callback<GetListResponse<Fuel>> {
@@ -105,7 +105,7 @@ class FuelViewModel : ViewModel() {
                     Log.d(TAG, "onResponse body is null: ${response.errorBody()?.toString()}")
                     errorMessage.value = "Unable to retrieve the fuel body response"
                 }
-                handler.removeCallbacks(r)
+                //handler.removeCallbacks(r)
                 isLoadingGet.value = false
             }
         })
